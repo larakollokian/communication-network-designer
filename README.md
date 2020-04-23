@@ -4,7 +4,7 @@ This is our program for the ECSE 422 Final project.
 
 ## What it does
 
-Given an input file named `input.txt` formatted as follows: 
+Given an input file named `input.txt` formatted as follows (example values included): 
 
 ```
 # lines starting with # are ignored
@@ -24,8 +24,7 @@ The program asks for a reliability goal and a cost constraint via command line v
 
 ## How to run it
 
-Navigate to the `src/` folder via terminal. Your `input.txt` file should already be in the root folder. The program takes two arguments: a reliability goal and a cost constraint
-Compile and run the program with the following commands:
+Navigate to the `src/` folder via terminal. Your `input.txt` file should already be in the root folder. The program takes two arguments: a reliability goal and a cost constraint. Compile and run the program with the following commands:
 ```
 $ javac Network.java
 $ java Network <reliability goal> <cost constraint>
