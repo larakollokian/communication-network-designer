@@ -15,6 +15,12 @@ public class Graph {
 		this.vertices.put(v.getLabel(), v);
 	}
 	
+	public void addVertices(HashMap<Integer, Vertex> vertices) {
+		for(Vertex v: vertices.values()) {
+			this.vertices.put(v.getLabel(), v);
+		}
+	}
+	
 	public void addEdge(Edge e) {
 		this.edges.add(e);
 	}
