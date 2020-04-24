@@ -110,7 +110,11 @@ public class Network {
 
     }
     
-    //could be in graph class?
+    /**
+     * method to calculate network cost 
+     * @param g
+     * @return
+     */
     public static double getNetworkCost(Graph g) {
     	double cost = 0.0;
     	for(Edge e: g.edges) {
@@ -119,6 +123,11 @@ public class Network {
     	return cost;
     }
     
+    /**
+     * helper function to calculate reliability of a MST
+     * @param g
+     * @return
+     */
     public static double getMSTReliability(Graph g) {
     	double reliability = 1;
     	for(Edge e: g.edges) {
@@ -127,9 +136,31 @@ public class Network {
     	return reliability;
     }
     
+    /**
+     * helper function to calculate reliability of a cycle
+     * @param cycle
+     * @return
+     */
     public static double getCycleReliability(ArrayList<Edge> cycle) {
-    	
-    	return 0.0;
+    	double reliability = 0.0;
+    	//calculate reliability for one edge not working in cycle each time
+    	for(int i = 0; i < cycle.size(); i++) {
+    		double iterRel = 1.0;
+    		for(Edge e: cycle) {
+    			if(cycle.indexOf(e) == i) {
+    				iterRel *= (1-e.reliability);
+    			} else {
+    				iterRel *= e.reliability;
+    			}
+    		}
+    		reliability += iterRel;
+    	}
+    	//add reliability of all edges working
+    	double allEdgesWorking = 1.0;
+    	for(Edge e: cycle) {
+    		allEdgesWorking *= e.reliability;
+    	}
+    	return reliability+allEdgesWorking;
     }
     
     /**
@@ -138,8 +169,17 @@ public class Network {
      * @return
      */
     public static double getNetworkReliability(Graph g) {
-    	
-    	return 0.0;
+    	ArrayList<Edge> cycle = g.hasCycle();
+    	if(cycle == null || cycle.isEmpty()) {
+    		return getMSTReliability(g);
+    	} else {
+    		ArrayList<Edge> notCycle = g.getEdgesNotInCycle(cycle);
+    		double reliability = getCycleReliability(cycle);
+    		for(Edge e: notCycle) {
+    			reliability *= e.reliability;
+    		}
+    		return reliability;
+    	}
     }
     
     /**

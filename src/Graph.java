@@ -127,4 +127,14 @@ public class Graph {
 		}
 		return cycle;
 	}
+	
+	public ArrayList<Edge> getEdgesNotInCycle(ArrayList<Edge> cycle) {
+		ArrayList<Edge> notCycle = new ArrayList<Edge>();
+		for(Edge e: this.edges) {
+			if(!cycle.contains(e)) {
+				notCycle.add(e);
+			}
+		}
+		return notCycle;
+	}
 }
