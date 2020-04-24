@@ -4,7 +4,7 @@ public class Vertex {
 	
 	private int label;
 	
-	private ArrayList<Edge> edges;
+	private ArrayList<Edge> edges; //might remove, replace with neighbors function in graph class
 	
 	public Vertex(int label) {
 		this.label = label;
@@ -23,6 +23,7 @@ public class Vertex {
 		edges.remove(e);
 	}
 	
+	//also replaced with function in graph class
 	public Edge getEdgeBetween(Vertex v) {
 		
 		for(Edge e: edges) {
