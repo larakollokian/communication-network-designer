@@ -40,7 +40,7 @@ public class Network {
                 if (lineRead.contains("#") && lineRead.contains("nodes")) {
                     lineRead = buffer.readLine();
                     nbrOfCities = Integer.valueOf(lineRead);
-                    System.out.println("Number of cities: " + nbrOfCities);
+                    //System.out.println("Number of cities: " + nbrOfCities);
 
                 }
                 // reliability values
@@ -51,7 +51,7 @@ public class Network {
                     for (String nbr : splitReliablilities) {
                         reliabilityMatrix.add(Double.valueOf(nbr));
                     }
-                    System.out.println("Reliability values: " + reliabilityMatrix);
+                    //System.out.println("Reliability values: " + reliabilityMatrix);
                 }
                 // cost values
                 else if (lineRead.contains("#") && lineRead.contains("cost")) {
@@ -61,7 +61,7 @@ public class Network {
                     for (String nbr : splitCosts) {
                         costMatrix.add(Integer.valueOf(nbr));
                     }
-                    System.out.println("Cost values: " + costMatrix);
+                    //System.out.println("Cost values: " + costMatrix);
                 }
             }
             buffer.close();
@@ -72,7 +72,7 @@ public class Network {
     }
     
     //could be in graph class?
-    public double getNetworkCost(Graph g) {
+    public static double getNetworkCost(Graph g) {
     	double cost = 0.0;
     	for(Edge e: g.edges) {
     		cost += e.cost;
@@ -80,7 +80,7 @@ public class Network {
     	return cost;
     }
     
-    public double getMSTReliability(Graph g) {
+    public static double getMSTReliability(Graph g) {
     	double reliability = 1;
     	for(Edge e: g.edges) {
     		reliability *= e.reliability;
@@ -88,12 +88,12 @@ public class Network {
     	return reliability;
     }
     
-    public double getNetworkReliability() {
+    public static double getNetworkReliability() {
     	
     	return 0.0;
     }
     
-    public void networkToMeetReliabilityGoal(double goal) {
+    public static void networkToMeetReliabilityGoal(double goal) {
     	//get graph with all edge costs/reliabilities from input.txt
     	//generate network MST with kruskal
     	//we want max reliability so sort order is 1
@@ -104,7 +104,7 @@ public class Network {
     	// if new reliability > goal, break, else keep finding edges
     }
     
-    public void networkToMeetCostConstraint(double budget) {
+    public static void networkToMeetCostConstraint(double budget) {
     	//get graph with all edge costs/reliabilities from input.txt
     	//generate network MST with kruskal
     	//we want min cost so sort order is 2

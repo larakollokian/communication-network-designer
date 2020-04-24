@@ -55,10 +55,8 @@ public class Kruskal {
     	PriorityQueue<Edge> pq;
     	
 		if(sortOrder == 1) { //sort by highest reliability first
-			System.out.println("sorting by rel");
 			pq = new PriorityQueue<>(g.edges.size(), Comparator.comparing(Edge::getReliability).reversed());
 		} else { //sort by min cost
-			System.out.println("sorting by cost");
 			pq = new PriorityQueue<>(g.edges.size(), Comparator.comparing(Edge::getCost));
 		}
 
@@ -71,12 +69,13 @@ public class Kruskal {
         makeSet(parent, g.vertices.size());
 
         Graph mst = new Graph();
-        ArrayList<Edge> sortedEdges = new ArrayList<>();
+        ArrayList<Edge> mstEdges = new ArrayList<>();
 
         //process vertices - 1 edges
         int index = 0;
         while(index < g.vertices.size() - 1) {
             Edge edge = pq.remove();
+
             //check if adding this edge creates a cycle
             int x_set = find(parent, edge.v1.getLabel());
             int y_set = find(parent, edge.v2.getLabel());
@@ -85,14 +84,13 @@ public class Kruskal {
                 //ignore, will create cycle
             }else {
                 //add it to our final result
-            	sortedEdges.add(edge);
+            	mstEdges.add(edge);
                 index++;
                 union(parent,x_set,y_set);
             }
         }
-        mst.edges = sortedEdges;
+        mst.edges = mstEdges;
         return mst;
-        
     }
 
 }

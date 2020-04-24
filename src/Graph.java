@@ -15,17 +15,13 @@ public class Graph {
 	public void addVertex(Vertex v) {
 		this.vertices.put(v.getLabel(), v);
 	}
-<<<<<<< HEAD
-
-=======
 	
 	public void addVertices(HashMap<Integer, Vertex> vertices) {
 		for(Vertex v: vertices.values()) {
 			this.vertices.put(v.getLabel(), v);
 		}
 	}
-	
->>>>>>> d205cb752f3123ed8083b0555ecd847b60ea3e29
+
 	public void addEdge(Edge e) {
 		this.edges.add(e);
 	}
@@ -53,6 +49,12 @@ public class Graph {
 			}
 		}
 		return null;
+	}
+	
+	public void print() {
+		for(Edge e: this.edges) {
+			System.out.println(e);
+		}
 	}
 
 }
