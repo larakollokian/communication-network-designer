@@ -128,28 +128,46 @@ public class Network {
     	return 0.0;
     }
     
-    public static Graph networkToMeetReliabilityGoal(double goal, Graph g, ArrayList<Edge> edges) {
-    	//get graph with all edge costs/reliabilities from input.txt
+    /**
+     * 
+     * @param goal
+     * @param g 
+     * @param edges
+     * @return
+     */
+    public static Graph networkToMeetReliabilityGoal(double goal, Graph graph, ArrayList<Edge> edges) {
     	//generate network MST with kruskal
     	//we want max reliability so sort order is 1
+    	Kruskal k = new Kruskal();
+    	Graph mst = k.mst(edges, graph, 1);
+    	
     	//calculate network reliability
     	//while reliability < goal
     	//find next edge that isn't in network
     	//add edge to network and calculate new reliability
     	// if new reliability > goal, break, else keep finding edges
-    	return g;
+    	return graph;
     }
     
-    public static Graph networkToMeetCostConstraint(double budget, Graph g, ArrayList<Edge> edges) {
-    	//get graph with all edge costs/reliabilities from input.txt
+    /**
+     * 
+     * @param budget
+     * @param graph
+     * @param edges
+     * @return
+     */
+    public static Graph networkToMeetCostConstraint(double budget, Graph graph, ArrayList<Edge> edges) {
     	//generate network MST with kruskal
     	//we want min cost so sort order is 2
+    	Kruskal k = new Kruskal();
+    	Graph mst = k.mst(edges, graph, 2);
+    	
     	//calculate network cost
     	//while cost < budget
     	//find next edge that isn't in network
     	//add edge to network and calculate new reliability
     	// if new cost > budget, break, else keep finding edges
-    	return g;
+    	return graph;
     }
 
     /**

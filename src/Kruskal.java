@@ -51,7 +51,10 @@ public class Kruskal {
 	 * @param sortOrder int 1 for max reliability, 2 for min cost
 	 * @return
 	 */
-    public Graph mst(Graph g, int sortOrder){
+    public Graph mst(ArrayList<Edge> edges, Graph graph, int sortOrder){
+    	Graph g = new Graph();
+    	g.vertices = graph.vertices;
+    	g.edges = edges;
     	PriorityQueue<Edge> pq;
     	
 		if(sortOrder == 1) { //sort by highest reliability first
