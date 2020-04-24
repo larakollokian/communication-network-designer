@@ -4,7 +4,7 @@ public class Vertex {
 	
 	private int label;
 	
-	ArrayList<Edge> edges;
+	private ArrayList<Edge> edges;
 	
 	public Vertex(int label) {
 		this.label = label;
@@ -32,5 +32,12 @@ public class Vertex {
 		}
 		return null;
 	}
+
+	@Override
+	public String toString() {
+		return "Vertex [label=" + label + "]";
+	}
+	
+	
 
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 public class Graph {
 	
 	HashMap<Integer, Vertex> vertices;
+	
 	ArrayList<Edge> edges;
 	
 	public Graph() {
