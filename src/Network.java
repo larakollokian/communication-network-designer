@@ -6,12 +6,29 @@ import java.util.*;
 public class Network {
 
     public static int nbrOfCities;
+    public static double reliabilityGoal;
+    public static double costConstraint;
     public static ArrayList<Double> reliabilityMatrix;
     public static ArrayList<Integer> costMatrix;
     public static String fileName;
     public static String fileURL = "input.txt";
 
     public static void main(String[] args) {
+    	//check if there were enough arguments given
+    	if(args.length != 2) {
+    		System.out.println("This program only accepts 2 arguments: a reliability goal and a cost constraint.");
+    	}
+    	try {
+    		reliabilityGoal = Double.parseDouble(args[0]);
+    		costConstraint = Double.parseDouble(args[1]);
+    	} catch(NumberFormatException e) {
+    		System.out.println("Reliability goal and cost constraint must be doubles");
+    		System.exit(0);
+    	}
+    	if(reliabilityGoal >= 1.0) {
+    		System.out.println("Reliability goal can't be larger than 1.");
+    		System.exit(0);
+    	}
         reliabilityMatrix = new ArrayList<>();
         costMatrix = new ArrayList<>();
         Graph graphNetwork = new Graph();
@@ -20,6 +37,24 @@ public class Network {
         readInputFile(fileURL);
         createGraphVertices(graphNetwork);
         createGraphEdges(edges, graphNetwork);
+        
+        Graph reliabilityNetwork = networkToMeetReliabilityGoal(reliabilityGoal, graphNetwork, edges);
+        System.out.println("The given reliability goal was: ");
+        if(reliabilityNetwork.edges.isEmpty()) {
+        	System.out.println("There is no possible combination of edges that meets that goal");
+        } else {
+        	System.out.println("The network that meets this goal is: ");
+        	reliabilityNetwork.print();
+        }
+        
+        Graph costNetwork = networkToMeetCostConstraint(costConstraint, graphNetwork, edges);
+        System.out.println("The given cost constraint was: ");
+        if(costNetwork.edges.isEmpty()) {
+        	System.out.println("There is no possible combination of edges that meets that constraint");
+        } else {
+        	System.out.println("The network that meets this constraint is: ");
+        	costNetwork.print();
+        }
     }
 
     /**
@@ -93,7 +128,7 @@ public class Network {
     	return 0.0;
     }
     
-    public static void networkToMeetReliabilityGoal(double goal) {
+    public static Graph networkToMeetReliabilityGoal(double goal, Graph g, ArrayList<Edge> edges) {
     	//get graph with all edge costs/reliabilities from input.txt
     	//generate network MST with kruskal
     	//we want max reliability so sort order is 1
@@ -102,9 +137,10 @@ public class Network {
     	//find next edge that isn't in network
     	//add edge to network and calculate new reliability
     	// if new reliability > goal, break, else keep finding edges
+    	return g;
     }
     
-    public static void networkToMeetCostConstraint(double budget) {
+    public static Graph networkToMeetCostConstraint(double budget, Graph g, ArrayList<Edge> edges) {
     	//get graph with all edge costs/reliabilities from input.txt
     	//generate network MST with kruskal
     	//we want min cost so sort order is 2
@@ -113,6 +149,7 @@ public class Network {
     	//find next edge that isn't in network
     	//add edge to network and calculate new reliability
     	// if new cost > budget, break, else keep finding edges
+    	return g;
     }
 
     /**
