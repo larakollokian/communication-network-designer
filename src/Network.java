@@ -135,15 +135,16 @@ public class Network {
      * @param graphNetwork
      */
     public static void createGraphEdges(ArrayList<Edge> edges, Graph graphNetwork) {
-        int index = 0;
-        for (int i = 0; i < nbrOfCities; i++) {
-            int v1Label = i;
-            for (int j = v1Label + 1; j < nbrOfCities; j++) {
-                int v2Label = j;
-                edges.add(new Edge(graphNetwork.vertices.get(v1Label), graphNetwork.vertices.get(v2Label),
-                        costMatrix.get(index), reliabilityMatrix.get(index)));
+            int index = 0;
+            for (int i = 0; i < nbrOfCities; i++) {
+                int v1Label = i;
+                for (int j = v1Label + 1; j < nbrOfCities; j++) {
+                    int v2Label = j;
+                    edges.add(new Edge(graphNetwork.vertices.get(v1Label), graphNetwork.vertices.get(v2Label),
+                            costMatrix.get(index), reliabilityMatrix.get(index)));
+                    index++;
+                }
             }
-        }
-    }
+     }
 
 }
