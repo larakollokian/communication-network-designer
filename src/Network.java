@@ -70,6 +70,50 @@ public class Network {
         }
 
     }
+    
+    //could be in graph class?
+    public double getNetworkCost(Graph g) {
+    	double cost = 0.0;
+    	for(Edge e: g.edges) {
+    		cost += e.cost;
+    	}
+    	return cost;
+    }
+    
+    public double getMSTReliability(Graph g) {
+    	double reliability = 1;
+    	for(Edge e: g.edges) {
+    		reliability *= e.reliability;
+    	}
+    	return reliability;
+    }
+    
+    public double getNetworkReliability() {
+    	
+    	return 0.0;
+    }
+    
+    public void networkToMeetReliabilityGoal(double goal) {
+    	//get graph with all edge costs/reliabilities from input.txt
+    	//generate network MST with kruskal
+    	//we want max reliability so sort order is 1
+    	//calculate network reliability
+    	//while reliability < goal
+    	//find next edge that isn't in network
+    	//add edge to network and calculate new reliability
+    	// if new reliability > goal, break, else keep finding edges
+    }
+    
+    public void networkToMeetCostConstraint(double budget) {
+    	//get graph with all edge costs/reliabilities from input.txt
+    	//generate network MST with kruskal
+    	//we want min cost so sort order is 2
+    	//calculate network cost
+    	//while cost < budget
+    	//find next edge that isn't in network
+    	//add edge to network and calculate new reliability
+    	// if new cost > budget, break, else keep finding edges
+    }
 
     /**
      * create vertices for our graph
