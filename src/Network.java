@@ -14,9 +14,12 @@ public class Network {
     public static void main(String[] args) {
         reliabilityMatrix = new ArrayList<>();
         costMatrix = new ArrayList<>();
+        Graph graphNetwork = new Graph();
+        ArrayList<Edge> edges = new ArrayList<>();
 
         readInputFile(fileURL);
-
+        createGraphVertices(graphNetwork);
+        createGraphEdges(edges, graphNetwork);
     }
 
     /**
@@ -37,7 +40,7 @@ public class Network {
                 if (lineRead.contains("#") && lineRead.contains("nodes")) {
                     lineRead = buffer.readLine();
                     nbrOfCities = Integer.valueOf(lineRead);
-                    // System.out.println(nbrOfCities);
+                    System.out.println("Number of cities: " + nbrOfCities);
 
                 }
                 // reliability values
@@ -48,7 +51,7 @@ public class Network {
                     for (String nbr : splitReliablilities) {
                         reliabilityMatrix.add(Double.valueOf(nbr));
                     }
-                    // System.out.println(reliabilityMatrix);
+                    System.out.println("Reliability values: " + reliabilityMatrix);
                 }
                 // cost values
                 else if (lineRead.contains("#") && lineRead.contains("cost")) {
@@ -58,7 +61,7 @@ public class Network {
                     for (String nbr : splitCosts) {
                         costMatrix.add(Integer.valueOf(nbr));
                     }
-                    // System.out.println(costMatrix);
+                    System.out.println("Cost values: " + costMatrix);
                 }
             }
             buffer.close();
@@ -66,6 +69,37 @@ public class Network {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * create vertices for our graph
+     * 
+     * @param graphNetwork
+     */
+    public static void createGraphVertices(Graph graphNetwork) {
+        for (int v = 0; v < nbrOfCities; v++) {
+            Vertex vertex = new Vertex(v);
+            graphNetwork.addVertex(vertex);
+        }
+        // System.out.println(graphNetwork.vertices.size() + " vertices");
+    }
+
+    /**
+     * create edges for our graph
+     * 
+     * @param edges
+     * @param graphNetwork
+     */
+    public static void createGraphEdges(ArrayList<Edge> edges, Graph graphNetwork) {
+        int index = 0;
+        for (int i = 0; i < nbrOfCities; i++) {
+            int v1Label = i;
+            for (int j = v1Label + 1; j < nbrOfCities; j++) {
+                int v2Label = j;
+                edges.add(new Edge(graphNetwork.vertices.get(v1Label), graphNetwork.vertices.get(v2Label),
+                        costMatrix.get(index), reliabilityMatrix.get(index)));
+            }
+        }
     }
 
 }
