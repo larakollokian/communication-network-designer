@@ -127,8 +127,13 @@ public class Network {
     	return reliability;
     }
     
+    public static double getCycleReliability(ArrayList<Edge> cycle) {
+    	
+    	return 0.0;
+    }
+    
     /**
-     * calculates the reliability of the given network/graph
+     * calculates the reliability of the given network/graph including cycles
      * @param g
      * @return
      */
