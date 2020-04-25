@@ -194,14 +194,13 @@ public class Network {
     	//we want max reliability so sort order is 1
     	Kruskal k = new Kruskal();
     	Graph mst = k.mst(edges, graph, 1);
-    	Edge e = getEdgeBetweenVertices(graph.vertices.get(1), graph.vertices.get(5), edges);
-    	mst.addEdge(e);
+
     	//calculate network reliability
     	//while reliability < goal
     	//find next edge that isn't in network
     	//add edge to network and calculate new reliability
     	// if new reliability > goal, break, else keep finding edges
-    	return mst;
+    	return graph;
     }
     
     /**
