@@ -13,7 +13,7 @@ Given an input file named `input.txt` formatted as follows (example values inclu
 # this is a symmetric matrix in row major form
 # N(N-1)/2 numbers representing the reliability of edges (include the word reliability in this line)
 0.94 0.91 0.96 0.93 0.92 0.94 0.97 0.91 0.92 0.94 0.90 0.94 0.93 0.96 0.91
-# N(N-1)/2 numbers representing the  cost of edges (include the word cost in this line)
+# N(N-1)/2 numbers representing the cost of edges (include the word cost in this line)
 # this is a symmetric matrix in row major form
 10 25 10 20 30 10 10 25 20 20 40 10 20 10 30
 ```
