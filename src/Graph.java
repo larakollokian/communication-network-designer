@@ -5,7 +5,7 @@ import java.util.Stack;
 /**
  * Graph class
  * DFS code adapted from the following link
- * https://www.geeksforgeeks.org/detect-cycle-undirected-graph/
+ * https://algorithms.tutorialhorizon.com/graph-detect-cycle-in-undirected-graph-using-dfs/
  *
  */
 public class Graph {
@@ -37,7 +37,11 @@ public class Graph {
 		return this.edges;
 	}
 
-	//replace edge list in vertex with function to get neighbors of a vertex in a graph dynamically to avoid updating the list over time
+	/**
+	 * gets the neighboring vertices of vertex v in the graph
+	 * @param v
+	 * @return
+	 */
 	public ArrayList<Vertex> getNeighbors(Vertex v) {
 		ArrayList<Vertex> neighbors = new ArrayList<Vertex>();
 		for(Edge e: this.edges) {
@@ -50,7 +54,12 @@ public class Graph {
 		return neighbors;
 	}
 
-	//replaces getEdgeBetween in vertex class to avoid maintaining list of edges in vertex
+	/**
+	 * gets the edge between vertices u and v in the graph
+	 * @param u
+	 * @param v
+	 * @return
+	 */
 	public Edge getEdgeBetween(Vertex u, Vertex v) {
 		for(Edge e: this.edges) {
 			if((e.v1 == u && e.v2 == v) || (e.v1 == v && e.v2 == u)) {
@@ -60,13 +69,19 @@ public class Graph {
 		return null;
 	}
 
-
+	/**
+	 * prints all edges in a graph
+	 */
 	public void print() {
 		for(Edge e: this.edges) {
 			System.out.println(e);
 		}
 	}
 
+	/**
+	 * Checks if the graph has a cycle. If yes, returns list of edges in cycle. If false, returns null
+	 * @return
+	 */
 	public ArrayList<Edge> hasCycle() {
 		//keep track of vertices you visited:
 		boolean[] visited = new boolean[this.vertices.size()];
@@ -81,14 +96,23 @@ public class Graph {
 				if(isCyclic(k, visited, -1, test)) {
 					//cycle found, returns edges in cycle
 					ArrayList<Edge> cycle = getEdgesInCycle(test);
-					return cycle; //true
+					return cycle; 
 				}
 			}
 		}
 		//no cycle found, returns empty list
-		return null; //false
+		return null; 
 	}
 
+	/**
+	 * helper function for finding cycle in graph 
+	 * 
+	 * @param vertex
+	 * @param visited
+	 * @param parent
+	 * @param cycle
+	 * @return
+	 */
 	private boolean isCyclic(int vertex, boolean[] visited, int parent, Stack<Vertex> cycle) {
 		// Mark the current node as visited 
 		visited[vertex] = true; 
@@ -113,6 +137,11 @@ public class Graph {
 		return false;
 	}
 
+	/**
+	 * when given a stack of vertices in a cycle, returns a list of edges between those vertices
+	 * @param stack
+	 * @return
+	 */
 	private ArrayList<Edge> getEdgesInCycle(Stack<Vertex> stack) {
 		ArrayList<Edge> cycle = new ArrayList<Edge>();
 		Vertex first = stack.pop();
@@ -131,6 +160,11 @@ public class Graph {
 		return cycle;
 	}
 
+	/**
+	 * when given a list of edges in a cycle, gets the remaining edges of the graph that aren't in the cycle
+	 * @param cycle
+	 * @return
+	 */
 	public ArrayList<Edge> getEdgesNotInCycle(ArrayList<Edge> cycle) {
 		ArrayList<Edge> notCycle = new ArrayList<Edge>();
 		for(Edge e: this.edges) {
