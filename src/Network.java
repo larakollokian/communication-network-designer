@@ -3,6 +3,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Our submission for ECSE 422 Final Project
+ * @author Lara Kollokian, 260806317
+ * @author Marie Vu, 260807903
+ *
+ */
 public class Network {
 
     public static int nbrOfCities;
@@ -67,7 +73,7 @@ public class Network {
 
     /**
      * Read inputs from file
-     * 
+     *
      * @param fileName
      */
     public static void readInputFile(String fileName) {
@@ -116,7 +122,7 @@ public class Network {
 
     /**
      * method to calculate network cost
-     * 
+     *
      * @param g
      * @return
      */
@@ -130,7 +136,7 @@ public class Network {
 
     /**
      * helper function to calculate reliability of a MST
-     * 
+     *
      * @param g
      * @return
      */
@@ -144,7 +150,7 @@ public class Network {
 
     /**
      * helper function to calculate reliability of a cycle
-     * 
+     *
      * @param cycle
      * @return
      */
@@ -172,7 +178,7 @@ public class Network {
 
     /**
      * calculates the reliability of the given network/graph including cycles
-     * 
+     *
      * @param g
      * @return
      */
@@ -191,7 +197,7 @@ public class Network {
     }
 
     /**
-     * 
+     *
      * @param goal
      * @param g
      * @param edges
@@ -214,7 +220,7 @@ public class Network {
                 if (reliability > baseGoal) {
                     baseGoal = reliability;
                     edgeToAdd = edge;
-                } 
+                }
                 mst.removeEdge(edge);
             }
         }
@@ -230,7 +236,7 @@ public class Network {
     }
 
     /**
-     * 
+     *
      * @param budget
      * @param graph
      * @param edges
@@ -243,29 +249,29 @@ public class Network {
         Graph mst = k.mst(edges, graph, 2);
 
         double baseGoal = getNetworkReliability(mst);
-        double baseCost = getNetworkCost(mst);
-        double cost = getNetworkCost(mst);
+        double originalCost = getNetworkCost(mst);
+        double updatedCost = getNetworkCost(mst);
+
         Edge edgeToAdd = new Edge();
 
         // check cost for each added edge
-        for (Edge edge : edges) {
+        for (Edge edge: edges) {
             if (!mst.getEdges().contains(edge)) {
-                if(edge.getCost() + cost > budget){
-                    break;
-                }
+                if(edge.getCost() + originalCost <= budget){
                 mst.addEdge(edge);
                 double reliability = getNetworkReliability(mst);
                 if (reliability > baseGoal) {
                     baseGoal = reliability;
-                    baseCost = getNetworkCost(mst);
+                    updatedCost = getNetworkCost(mst);
                     edgeToAdd = edge;
-                } 
+                }
                 mst.removeEdge(edge);
+                }
             }
         }
 
         // after looping, check if you meet target
-        if (baseCost < budget && edgeToAdd.reliability > 0) 
+        if (updatedCost <= budget && edgeToAdd.reliability > 0)
         {
             mst.addEdge(edgeToAdd);
             return mst;
@@ -277,7 +283,7 @@ public class Network {
 
     /**
      * create vertices for our graph
-     * 
+     *
      * @param graphNetwork
      */
     public static void createGraphVertices(Graph graphNetwork) {
@@ -290,7 +296,7 @@ public class Network {
 
     /**
      * create edges for our graph
-     * 
+     *
      * @param edges
      * @param graphNetwork
      */
@@ -309,7 +315,7 @@ public class Network {
 
     /**
      * returns edge between two given vertices in list of edges
-     * 
+     *
      * @param u
      * @param v
      * @param edges
