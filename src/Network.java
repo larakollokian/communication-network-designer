@@ -1,6 +1,6 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public class Network {
@@ -8,29 +8,31 @@ public class Network {
     public static int nbrOfCities;
     public static double reliabilityGoal;
     public static double costConstraint;
+    public static double mstReliablity;
+    public static double mstCost;
     public static ArrayList<Double> reliabilityMatrix;
     public static ArrayList<Integer> costMatrix;
-    public static String fileURL = "input.txt";
+    public static String fileURL = "../input.txt";
 
     public static void main(String[] args) {
-    	//check if there were enough arguments given
-    	if(args.length != 2) {
-    		System.out.println("This program only accepts 2 arguments: a reliability goal and a cost constraint.");
-    		System.exit(0);
-    	}
-    	try {
-    		reliabilityGoal = Double.parseDouble(args[0]);
-    		costConstraint = Double.parseDouble(args[1]);
-    	} catch(NumberFormatException e) {
-    		System.out.println("Reliability goal and cost constraint must be doubles.");
-    		System.exit(0);
-    	}
-    	if(reliabilityGoal >= 1.0) {
-    		System.out.println("Reliability goal can't be larger than 1.");
-    		System.exit(0);
-    	}
-    	
-    	//get data from input file
+        // check if there were enough arguments given
+        if (args.length != 2) {
+            System.out.println("This program only accepts 2 arguments: a reliability goal and a cost constraint.");
+            System.exit(0);
+        }
+        try {
+            reliabilityGoal = Double.parseDouble(args[0]);
+            costConstraint = Double.parseDouble(args[1]);
+        } catch (NumberFormatException e) {
+            System.out.println("Reliability goal and cost constraint must be doubles.");
+            System.exit(0);
+        }
+        if (reliabilityGoal >= 1.0) {
+            System.out.println("Reliability goal can't be larger than 1.");
+            System.exit(0);
+        }
+
+        // get data from input file
         reliabilityMatrix = new ArrayList<>();
         costMatrix = new ArrayList<>();
         Graph graphNetwork = new Graph();
@@ -39,25 +41,27 @@ public class Network {
         readInputFile(fileURL);
         createGraphVertices(graphNetwork);
         createGraphEdges(edges, graphNetwork);
-        
+
         Graph reliabilityNetwork = networkToMeetReliabilityGoal(reliabilityGoal, graphNetwork, edges);
         System.out.println("The given reliability goal was: " + reliabilityGoal);
-        if(reliabilityNetwork.edges.isEmpty()) {
-        	System.out.println("There is no possible combination of edges that meets that goal.");
+        if (reliabilityNetwork.edges.isEmpty()) {
+            System.out.println("There is no possible combination of edges that meets that goal.");
         } else {
-        	System.out.println("The network that meets this goal is: ");
-        	reliabilityNetwork.print();
-        	System.out.println("With a reliability of " + getNetworkReliability(reliabilityNetwork) + " and a cost of " + getNetworkCost(reliabilityNetwork) + ".");
+            System.out.println("The network that meets this goal is: ");
+            reliabilityNetwork.print();
+            System.out.println("With a reliability of " + getNetworkReliability(reliabilityNetwork) + " and a cost of "
+                    + getNetworkCost(reliabilityNetwork) + ".");
         }
-        
-        Graph costNetwork = networkToMeetCostConstraint(costConstraint, graphNetwork, edges);
+
+        Graph costNetwork = networkToMeetCostConstraint(costConstraint, reliabilityGoal, graphNetwork, edges);
         System.out.println("The given cost constraint was: " + costConstraint);
-        if(costNetwork.edges.isEmpty()) {
-        	System.out.println("There is no possible combination of edges that meets that constraint.");
+        if (costNetwork.edges.isEmpty()) {
+            System.out.println("There is no possible combination of edges that meets that constraint.");
         } else {
-        	System.out.println("The network that meets this constraint is: ");
-        	costNetwork.print();
-        	System.out.println("With a reliability of " + getNetworkReliability(costNetwork) + " and a cost of " + getNetworkCost(costNetwork) + ".");
+            System.out.println("The network that meets this constraint is: ");
+            costNetwork.print();
+            System.out.println("With a reliability of " + getNetworkReliability(costNetwork) + " and a cost of "
+                    + getNetworkCost(costNetwork) + ".");
         }
     }
 
@@ -78,7 +82,7 @@ public class Network {
                 if (lineRead.contains("#") && lineRead.contains("nodes")) {
                     lineRead = buffer.readLine();
                     nbrOfCities = Integer.valueOf(lineRead);
-                    //System.out.println("Number of cities: " + nbrOfCities);
+                    // System.out.println("Number of cities: " + nbrOfCities);
 
                 }
                 // reliability values
@@ -89,7 +93,7 @@ public class Network {
                     for (String nbr : splitReliablilities) {
                         reliabilityMatrix.add(Double.valueOf(nbr));
                     }
-                    //System.out.println("Reliability values: " + reliabilityMatrix);
+                    // System.out.println("Reliability values: " + reliabilityMatrix);
                 }
                 // cost values
                 else if (lineRead.contains("#") && lineRead.contains("cost")) {
@@ -99,7 +103,7 @@ public class Network {
                     for (String nbr : splitCosts) {
                         costMatrix.add(Integer.valueOf(nbr));
                     }
-                    //System.out.println("Cost values: " + costMatrix);
+                    // System.out.println("Cost values: " + costMatrix);
                 }
             }
             buffer.close();
@@ -109,100 +113,122 @@ public class Network {
         }
 
     }
-    
+
     /**
-     * method to calculate network cost 
+     * method to calculate network cost
+     * 
      * @param g
      * @return
      */
     public static double getNetworkCost(Graph g) {
-    	double cost = 0.0;
-    	for(Edge e: g.edges) {
-    		cost += e.cost;
-    	}
-    	return cost;
+        double cost = 0.0;
+        for (Edge e : g.edges) {
+            cost += e.cost;
+        }
+        return cost;
     }
-    
+
     /**
      * helper function to calculate reliability of a MST
+     * 
      * @param g
      * @return
      */
     public static double getMSTReliability(Graph g) {
-    	double reliability = 1;
-    	for(Edge e: g.edges) {
-    		reliability *= e.reliability;
-    	}
-    	return reliability;
+        double reliability = 1;
+        for (Edge e : g.edges) {
+            reliability *= e.reliability;
+        }
+        return reliability;
     }
-    
+
     /**
      * helper function to calculate reliability of a cycle
+     * 
      * @param cycle
      * @return
      */
     public static double getCycleReliability(ArrayList<Edge> cycle) {
-    	double reliability = 0.0;
-    	//calculate reliability for one edge not working in cycle each time
-    	for(int i = 0; i < cycle.size(); i++) {
-    		double iterRel = 1;
-    		for(Edge e: cycle) {
-    			if(cycle.indexOf(e) == i) {
-    				iterRel *= (1-e.reliability);
-    			} else {
-    				iterRel *= e.reliability;
-    			}
-    		}
-    		reliability += iterRel;
-    	}
-    	//add reliability of all edges working
-    	double allEdgesWorking = 1;
-    	for(Edge e: cycle) {
-    		allEdgesWorking *= e.reliability;
-    	}
-    	return reliability+allEdgesWorking;
+        double reliability = 0.0;
+        // calculate reliability for one edge not working in cycle each time
+        for (int i = 0; i < cycle.size(); i++) {
+            double iterRel = 1;
+            for (Edge e : cycle) {
+                if (cycle.indexOf(e) == i) {
+                    iterRel *= (1 - e.reliability);
+                } else {
+                    iterRel *= e.reliability;
+                }
+            }
+            reliability += iterRel;
+        }
+        // add reliability of all edges working
+        double allEdgesWorking = 1;
+        for (Edge e : cycle) {
+            allEdgesWorking *= e.reliability;
+        }
+        return reliability + allEdgesWorking;
     }
-    
+
     /**
      * calculates the reliability of the given network/graph including cycles
+     * 
      * @param g
      * @return
      */
     public static double getNetworkReliability(Graph g) {
-    	ArrayList<Edge> cycle = g.hasCycle();
-    	if(cycle == null || cycle.isEmpty()) {
-    		return getMSTReliability(g);
-    	} else {
-    		ArrayList<Edge> notCycle = g.getEdgesNotInCycle(cycle);
-    		double reliability = getCycleReliability(cycle);
-    		for(Edge e: notCycle) {
-    			reliability *= e.reliability;
-    		}
-    		return reliability;
-    	}
+        ArrayList<Edge> cycle = g.hasCycle();
+        if (cycle == null || cycle.isEmpty()) {
+            return getMSTReliability(g);
+        } else {
+            ArrayList<Edge> notCycle = g.getEdgesNotInCycle(cycle);
+            double reliability = getCycleReliability(cycle);
+            for (Edge e : notCycle) {
+                reliability *= e.reliability;
+            }
+            return reliability;
+        }
     }
-    
+
     /**
      * 
      * @param goal
-     * @param g 
+     * @param g
      * @param edges
      * @return
      */
     public static Graph networkToMeetReliabilityGoal(double goal, Graph graph, ArrayList<Edge> edges) {
-    	//generate network MST with kruskal
-    	//we want max reliability so sort order is 1
-    	Kruskal k = new Kruskal();
-    	Graph mst = k.mst(edges, graph, 1);
+        // generate network MST with kruskal
+        // we want max reliability so sort order is 1
+        Kruskal k = new Kruskal();
+        Graph mst = k.mst(edges, graph, 1);
 
-    	//calculate network reliability
-    	//while reliability < goal
-    	//find next edge that isn't in network
-    	//add edge to network and calculate new reliability
-    	// if new reliability > goal, break, else keep finding edges
-    	return graph;
+        double baseGoal = getNetworkReliability(mst);
+        Edge edgeToAdd = new Edge();
+
+        // check reliability for each added edge
+        for (Edge edge : edges) {
+            if (!mst.getEdges().contains(edge)) {
+                mst.addEdge(edge);
+                double reliability = getNetworkReliability(mst);
+                if (reliability > baseGoal) {
+                    baseGoal = reliability;
+                    edgeToAdd = edge;
+                } 
+                mst.removeEdge(edge);
+            }
+        }
+
+        // after looping, check if you meet target
+        if (baseGoal > goal) {
+            mst.addEdge(edgeToAdd);
+            return mst;
+        } else {
+            mst.edges.clear();
+            return mst;
+        }
     }
-    
+
     /**
      * 
      * @param budget
@@ -210,18 +236,43 @@ public class Network {
      * @param edges
      * @return
      */
-    public static Graph networkToMeetCostConstraint(double budget, Graph graph, ArrayList<Edge> edges) {
-    	//generate network MST with kruskal
-    	//we want min cost so sort order is 2
-    	Kruskal k = new Kruskal();
-    	Graph mst = k.mst(edges, graph, 2);
-    	
-    	//calculate network cost
-    	//while cost < budget
-    	//find next edge that isn't in network
-    	//add edge to network and calculate new reliability
-    	// if new cost > budget, break, else keep finding edges
-    	return graph;
+    public static Graph networkToMeetCostConstraint(double budget, double goal, Graph graph, ArrayList<Edge> edges) {
+        // generate network MST with kruskal
+        // we want max reliability so sort order is 1
+        Kruskal k = new Kruskal();
+        Graph mst = k.mst(edges, graph, 2);
+
+        double baseGoal = getNetworkReliability(mst);
+        double baseCost = getNetworkCost(mst);
+        double cost = getNetworkCost(mst);
+        Edge edgeToAdd = new Edge();
+
+        // check cost for each added edge
+        for (Edge edge : edges) {
+            if (!mst.getEdges().contains(edge)) {
+                if(edge.getCost() + cost > budget){
+                    break;
+                }
+                mst.addEdge(edge);
+                double reliability = getNetworkReliability(mst);
+                if (reliability > baseGoal) {
+                    baseGoal = reliability;
+                    baseCost = getNetworkCost(mst);
+                    edgeToAdd = edge;
+                } 
+                mst.removeEdge(edge);
+            }
+        }
+
+        // after looping, check if you meet target
+        if (baseCost < budget && edgeToAdd.reliability > 0) 
+        {
+            mst.addEdge(edgeToAdd);
+            return mst;
+        } else {
+            mst.edges.clear();
+            return mst;
+        }
     }
 
     /**
@@ -244,18 +295,18 @@ public class Network {
      * @param graphNetwork
      */
     public static void createGraphEdges(ArrayList<Edge> edges, Graph graphNetwork) {
-            int index = 0;
-            for (int i = 0; i < nbrOfCities; i++) {
-                int v1Label = i;
-                for (int j = v1Label + 1; j < nbrOfCities; j++) {
-                    int v2Label = j;
-                    edges.add(new Edge(graphNetwork.vertices.get(v1Label), graphNetwork.vertices.get(v2Label),
-                            costMatrix.get(index), reliabilityMatrix.get(index)));
-                    index++;
-                }
+        int index = 0;
+        for (int i = 0; i < nbrOfCities; i++) {
+            int v1Label = i;
+            for (int j = v1Label + 1; j < nbrOfCities; j++) {
+                int v2Label = j;
+                edges.add(new Edge(graphNetwork.vertices.get(v1Label), graphNetwork.vertices.get(v2Label),
+                        costMatrix.get(index), reliabilityMatrix.get(index)));
+                index++;
             }
-     }
-    
+        }
+    }
+
     /**
      * returns edge between two given vertices in list of edges
      * 
@@ -265,12 +316,12 @@ public class Network {
      * @return
      */
     public static Edge getEdgeBetweenVertices(Vertex u, Vertex v, ArrayList<Edge> edges) {
-		for(Edge e: edges) {
-			if((e.v1 == u && e.v2 == v) || (e.v1 == v && e.v2 == u)) {
-				return e;
-			}
-		}
-		return null;
+        for (Edge e : edges) {
+            if ((e.v1 == u && e.v2 == v) || (e.v1 == v && e.v2 == u)) {
+                return e;
+            }
+        }
+        return null;
     }
 
 }

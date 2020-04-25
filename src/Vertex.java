@@ -1,9 +1,9 @@
 //import java.util.ArrayList;
 
 public class Vertex {
-	
+
 	private int label;
-	
+
 	public Vertex(int label) {
 		this.label = label;
 	}
@@ -14,9 +14,7 @@ public class Vertex {
 
 	@Override
 	public String toString() {
-		return label+"";
+		return label + "";
 	}
-	
-	
 
 }
