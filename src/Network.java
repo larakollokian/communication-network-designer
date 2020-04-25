@@ -18,7 +18,7 @@ public class Network {
     public static double mstCost;
     public static ArrayList<Double> reliabilityMatrix;
     public static ArrayList<Integer> costMatrix;
-    public static String fileURL = "input.txt";
+    public static String fileURL = "../input.txt";
 
     public static void main(String[] args) {
         // check if there were enough arguments given
