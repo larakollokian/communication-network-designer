@@ -42,9 +42,9 @@ public class Graph {
 		ArrayList<Vertex> neighbors = new ArrayList<Vertex>();
 		for(Edge e: this.edges) {
 			if(e.v1 == v) {
-				neighbors.add(e.v1);
-			} else if(e.v2 == v) {
 				neighbors.add(e.v2);
+			} else if(e.v2 == v) {
+				neighbors.add(e.v1);
 			}
 		}
 		return neighbors;
@@ -68,14 +68,11 @@ public class Graph {
 	}
 
 	public ArrayList<Edge> hasCycle() {
-		//ArrayList<Edge> cycle = new ArrayList<Edge>();
-
 		//keep track of vertices you visited:
 		boolean[] visited = new boolean[this.vertices.size()];
 		for(int i = 0; i < visited.length; i++) {
 			visited[i] = false;
 		}
-
 		//call helper function
 		Stack<Vertex> test = new Stack<Vertex>();
 		for(int k = 0; k < visited.length; k++) {
@@ -83,7 +80,6 @@ public class Graph {
 				test.removeAllElements();
 				if(isCyclic(k, visited, -1, test)) {
 					//cycle found, returns edges in cycle
-					//get cycle edges from stack
 					ArrayList<Edge> cycle = getEdgesInCycle(test);
 					return cycle; //true
 				}
@@ -96,28 +92,31 @@ public class Graph {
 	private boolean isCyclic(int vertex, boolean[] visited, int parent, Stack<Vertex> cycle) {
 		// Mark the current node as visited 
 		visited[vertex] = true; 
-		cycle.push(this.vertices.get(vertex)); //keeping track of cycle
 		int i; 
 
 		// Recur for all the vertices adjacent to this vertex 
-		ArrayList<Vertex> neighbors = getNeighbors(this.vertices.get(vertex));
+		ArrayList<Vertex> neighbors = this.getNeighbors(this.vertices.get(vertex));
 		for(Vertex n: neighbors) {
 			i = n.getLabel();
-
-			if(!visited[i]) { //if neighbor not visited, check for that neighbor
-				if (isCyclic(i, visited, vertex, cycle)) {
-					return true; 
-				} else if(i != parent) { //if it is visited and it's not the parent, then cycle is detected
-					return true;
+			cycle.push(n);
+			if(i != parent) { //check for neighbors that arent parent
+				if(visited[i]) {
+					return true; //cycle detected
+				} else {
+					if (isCyclic(i, visited, vertex, cycle)) {
+						return true; //cycle detected in recursion
+					} 
 				}
 			}
+			cycle.pop();
 		}
 		return false;
 	}
-	
+
 	private ArrayList<Edge> getEdgesInCycle(Stack<Vertex> stack) {
 		ArrayList<Edge> cycle = new ArrayList<Edge>();
-		Vertex v1 = stack.pop();
+		Vertex first = stack.pop();
+		Vertex v1 = first;
 		Vertex v2;
 		while(!stack.isEmpty()) {
 			v2 = stack.pop();
@@ -125,9 +124,13 @@ public class Graph {
 			cycle.add(e);
 			v1 = v2;
 		}
+		if(first.getLabel() == 0) {
+			Edge e = getEdgeBetween(v1, first);
+			cycle.add(e);
+		}
 		return cycle;
 	}
-	
+
 	public ArrayList<Edge> getEdgesNotInCycle(ArrayList<Edge> cycle) {
 		ArrayList<Edge> notCycle = new ArrayList<Edge>();
 		for(Edge e: this.edges) {

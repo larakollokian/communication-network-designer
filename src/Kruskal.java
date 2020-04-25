@@ -92,6 +92,7 @@ public class Kruskal {
                 union(parent,x_set,y_set);
             }
         }
+        mst.vertices = graph.vertices;
         mst.edges = mstEdges;
         return mst;
     }

@@ -41,7 +41,7 @@ public class Network {
         createGraphEdges(edges, graphNetwork);
         
         Graph reliabilityNetwork = networkToMeetReliabilityGoal(reliabilityGoal, graphNetwork, edges);
-        System.out.println("The given reliability goal was: ");
+        System.out.println("The given reliability goal was: " + reliabilityGoal);
         if(reliabilityNetwork.edges.isEmpty()) {
         	System.out.println("There is no possible combination of edges that meets that goal.");
         } else {
@@ -51,7 +51,7 @@ public class Network {
         }
         
         Graph costNetwork = networkToMeetCostConstraint(costConstraint, graphNetwork, edges);
-        System.out.println("The given cost constraint was: ");
+        System.out.println("The given cost constraint was: " + costConstraint);
         if(costNetwork.edges.isEmpty()) {
         	System.out.println("There is no possible combination of edges that meets that constraint.");
         } else {
@@ -145,7 +145,7 @@ public class Network {
     	double reliability = 0.0;
     	//calculate reliability for one edge not working in cycle each time
     	for(int i = 0; i < cycle.size(); i++) {
-    		double iterRel = 1.0;
+    		double iterRel = 1;
     		for(Edge e: cycle) {
     			if(cycle.indexOf(e) == i) {
     				iterRel *= (1-e.reliability);
@@ -156,7 +156,7 @@ public class Network {
     		reliability += iterRel;
     	}
     	//add reliability of all edges working
-    	double allEdgesWorking = 1.0;
+    	double allEdgesWorking = 1;
     	for(Edge e: cycle) {
     		allEdgesWorking *= e.reliability;
     	}
@@ -194,13 +194,14 @@ public class Network {
     	//we want max reliability so sort order is 1
     	Kruskal k = new Kruskal();
     	Graph mst = k.mst(edges, graph, 1);
-    	
+    	Edge e = getEdgeBetweenVertices(graph.vertices.get(1), graph.vertices.get(5), edges);
+    	mst.addEdge(e);
     	//calculate network reliability
     	//while reliability < goal
     	//find next edge that isn't in network
     	//add edge to network and calculate new reliability
     	// if new reliability > goal, break, else keep finding edges
-    	return graph;
+    	return mst;
     }
     
     /**
@@ -255,5 +256,22 @@ public class Network {
                 }
             }
      }
+    
+    /**
+     * returns edge between two given vertices in list of edges
+     * 
+     * @param u
+     * @param v
+     * @param edges
+     * @return
+     */
+    public static Edge getEdgeBetweenVertices(Vertex u, Vertex v, ArrayList<Edge> edges) {
+		for(Edge e: edges) {
+			if((e.v1 == u && e.v2 == v) || (e.v1 == v && e.v2 == u)) {
+				return e;
+			}
+		}
+		return null;
+    }
 
 }
