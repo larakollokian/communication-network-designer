@@ -10,6 +10,12 @@ import java.util.PriorityQueue;
  */
 public class Kruskal {
 	
+	private int sortOrder;
+	
+	public Kruskal(int sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
 	/**
 	 * This function creates a new element with a parent pointer to itself
 	 * @param parent
@@ -51,7 +57,7 @@ public class Kruskal {
 	 * @param sortOrder int 1 for max reliability, 2 for min cost
 	 * @return
 	 */
-    public Graph mst(ArrayList<Edge> edges, Graph graph, int sortOrder){
+    public Graph mst(ArrayList<Edge> edges, Graph graph){
     	Graph g = new Graph();
     	g.vertices = graph.vertices;
     	g.edges = edges;

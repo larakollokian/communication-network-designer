@@ -18,7 +18,7 @@ public class Network {
     public static double mstCost;
     public static ArrayList<Double> reliabilityMatrix;
     public static ArrayList<Integer> costMatrix;
-    public static String fileURL = "../input.txt";
+    public static String fileURL = "input.txt";
 
     public static void main(String[] args) {
         // check if there were enough arguments given
@@ -59,7 +59,7 @@ public class Network {
                     + getNetworkCost(reliabilityNetwork) + ".");
         }
 
-        Graph costNetwork = networkToMeetCostConstraint(costConstraint, reliabilityGoal, graphNetwork, edges);
+        Graph costNetwork = networkToMeetCostConstraint(costConstraint, graphNetwork, edges);
         System.out.println("The given cost constraint was: " + costConstraint);
         if (costNetwork.edges.isEmpty()) {
             System.out.println("There is no possible combination of edges that meets that constraint.");
@@ -206,8 +206,8 @@ public class Network {
     public static Graph networkToMeetReliabilityGoal(double goal, Graph graph, ArrayList<Edge> edges) {
         // generate network MST with kruskal
         // we want max reliability so sort order is 1
-        Kruskal k = new Kruskal();
-        Graph mst = k.mst(edges, graph, 1);
+        Kruskal k = new Kruskal(1);
+        Graph mst = k.mst(edges, graph);
 
         double baseGoal = getNetworkReliability(mst);
         Edge edgeToAdd = new Edge();
@@ -242,11 +242,11 @@ public class Network {
      * @param edges
      * @return
      */
-    public static Graph networkToMeetCostConstraint(double budget, double goal, Graph graph, ArrayList<Edge> edges) {
+    public static Graph networkToMeetCostConstraint(double budget, Graph graph, ArrayList<Edge> edges) {
         // generate network MST with kruskal
-        // we want max reliability so sort order is 1
-        Kruskal k = new Kruskal();
-        Graph mst = k.mst(edges, graph, 2);
+        // we want min cost so sort order is 2
+        Kruskal k = new Kruskal(2);
+        Graph mst = k.mst(edges, graph);
 
         double baseGoal = getNetworkReliability(mst);
         double originalCost = getNetworkCost(mst);
@@ -271,8 +271,7 @@ public class Network {
         }
 
         // after looping, check if you meet target
-        if (updatedCost <= budget && edgeToAdd.reliability > 0)
-        {
+        if (updatedCost <= budget && edgeToAdd.reliability > 0) {
             mst.addEdge(edgeToAdd);
             return mst;
         } else {
@@ -291,7 +290,6 @@ public class Network {
             Vertex vertex = new Vertex(v);
             graphNetwork.addVertex(vertex);
         }
-        // System.out.println(graphNetwork.vertices.size() + " vertices");
     }
 
     /**
